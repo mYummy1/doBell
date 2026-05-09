@@ -2,16 +2,17 @@
 import { onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import AdvancedFilterModal from '../components/AdvancedFilterModal.vue'
+import CompanySearchInput from '../components/CompanySearchInput.vue'
 import TagFilterModal from '../components/TagFilterModal.vue'
 import AuthGuestBar from '../components/AuthGuestBar.vue'
 import UserMenuDropdown from '../components/UserMenuDropdown.vue'
 import { useAuth } from '../composables/useAuth'
-import { SEARCH_HISTORY_DATALIST_ID, useSearchHistory } from '../composables/useSearchHistory'
+import { useSearchHistory } from '../composables/useSearchHistory'
 
 const router = useRouter()
 const route = useRoute()
 const { isLoggedIn } = useAuth()
-const { history: searchHistory, rememberQuery } = useSearchHistory()
+const { rememberQuery } = useSearchHistory()
 
 const faviconUrl = `${import.meta.env.BASE_URL}favicon.svg`
 
@@ -126,18 +127,7 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
 
       <form class="search-form" @submit.prevent="onSearch">
         <div class="search-shell">
-          <input
-            v-model="query"
-            type="search"
-            class="search-input"
-            :list="SEARCH_HISTORY_DATALIST_ID"
-            placeholder="企业名称/统一社会信用代码/股东姓名"
-            autocomplete="organization"
-            enterkeyhint="search"
-          />
-          <datalist :id="SEARCH_HISTORY_DATALIST_ID">
-            <option v-for="(item, idx) in searchHistory" :key="idx" :value="item" />
-          </datalist>
+          <CompanySearchInput v-model="query" variant="hero" />
           <button type="submit" class="search-btn">
             <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
@@ -496,23 +486,6 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
   padding: 6px 6px 6px 22px;
   gap: 8px;
   border: 1px solid rgba(26, 62, 76, 0.06);
-}
-
-.search-input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  background: transparent;
-  font-size: 15px;
-  color: var(--db-text);
-  outline: none;
-  padding: 12px 0;
-  user-select: text;
-  -webkit-user-select: text;
-}
-
-.search-input::placeholder {
-  color: var(--db-placeholder);
 }
 
 .search-btn {

@@ -66,6 +66,34 @@ function scalePenetrationPositions(nodes: RelationPenetrationNode[]): RelationPe
   }))
 }
 
+/**
+ * layout: 'none' 时节点 x/y 为像素坐标，不会随容器自动缩放。
+ * 将设计稿坐标归一化到固定逻辑画布，避免窄屏/卡片内图谱裁切、堆叠异常。
+ */
+function normalizePenetrationLayout(nodes: RelationPenetrationNode[]): RelationPenetrationNode[] {
+  if (!nodes.length) return nodes
+  const xs = nodes.map((n) => n.x)
+  const ys = nodes.map((n) => n.y)
+  const minX = Math.min(...xs)
+  const maxX = Math.max(...xs)
+  const minY = Math.min(...ys)
+  const maxY = Math.max(...ys)
+  const spanX = Math.max(1, maxX - minX)
+  const spanY = Math.max(1, maxY - minY)
+  /** 与 legend 留白匹配；ECharts 会再按容器缩放整块坐标 */
+  const viewW = 920
+  const viewH = 480
+  const padX = 72
+  const padY = 52
+  const innerW = viewW - padX * 2
+  const innerH = viewH - padY * 2
+  return nodes.map((n) => ({
+    ...n,
+    x: padX + ((n.x - minX) / spanX) * innerW,
+    y: padY + ((n.y - minY) / spanY) * innerH,
+  }))
+}
+
 function roleCategory(role: RelationPenetrationNode['role']): number {
   switch (role) {
     case 'target':
@@ -213,7 +241,8 @@ function penetrationLinkToGraph(l: RelationPenetrationLink): Record<string, unkn
 
 function buildPenetrationSpecOption(spec: RelationPenetrationSpec): EChartsOption {
   const scaled = scalePenetrationPositions(spec.nodes)
-  const nodes = scaled.map(penetrationNodeToGraph)
+  const laidOut = normalizePenetrationLayout(scaled)
+  const nodes = laidOut.map(penetrationNodeToGraph)
   const links = spec.links.map(penetrationLinkToGraph)
 
   return {
@@ -239,6 +268,10 @@ function buildPenetrationSpecOption(spec: RelationPenetrationSpec): EChartsOptio
       {
         type: 'graph',
         layout: 'none',
+        left: 12,
+        right: 12,
+        top: 12,
+        bottom: 52,
         data: nodes,
         links,
         categories: [
@@ -498,6 +531,18 @@ const chartWrapClass = computed(() =>
   props.company.relationPenetration?.nodes?.length ? 'relation-penetrate-chart is-penetration-spec' : 'relation-penetrate-chart'
 )
 
+const isPenetrationSpec = computed(() => !!props.company.relationPenetration?.nodes?.length)
+
+function applyInitialRoam() {
+  /** 固定坐标穿透图：graphRoam 缩放易导致裁切/错位，仅对力导向自动布局略缩小 */
+  if (isPenetrationSpec.value) return
+  chart?.dispatchAction({
+    type: 'graphRoam',
+    seriesIndex: 0,
+    zoom: 0.88,
+  })
+}
+
 function mountChart() {
   const el = chartRef.value
   if (!el || chart) return
@@ -509,13 +554,11 @@ function mountChart() {
   ro.observe(el)
 
   nextTick(() => {
-    /** 默认略缩小视野（力导向与固定布局均适用） */
-    chart?.dispatchAction({
-      type: 'graphRoam',
-      seriesIndex: 0,
-      zoom: 0.88,
-    })
+    applyInitialRoam()
     resizeChart()
+    requestAnimationFrame(() => {
+      resizeChart()
+    })
   })
 }
 
@@ -530,12 +573,9 @@ function activateChart() {
       mountChart()
     } else {
       nextTick(() => {
-        chart?.dispatchAction({
-          type: 'graphRoam',
-          seriesIndex: 0,
-          zoom: 0.88,
-        })
+        applyInitialRoam()
         resizeChart()
+        requestAnimationFrame(() => resizeChart())
       })
     }
   })
@@ -556,12 +596,9 @@ watch(chartOption, (opt) => {
   if (!chart) return
   chart.setOption(opt, true)
   nextTick(() => {
-    chart?.dispatchAction({
-      type: 'graphRoam',
-      seriesIndex: 0,
-      zoom: 0.88,
-    })
+    applyInitialRoam()
     resizeChart()
+    requestAnimationFrame(() => resizeChart())
   })
 })
 

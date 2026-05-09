@@ -3,9 +3,6 @@ import { ref } from 'vue'
 const STORAGE_KEY = 'db-search-company-history'
 const MAX_ITEMS = 40
 
-/** 与输入框 datalist 共用的 id */
-export const SEARCH_HISTORY_DATALIST_ID = 'db-company-search-history'
-
 function readStorage(): string[] {
   if (typeof localStorage === 'undefined') return []
   try {

@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import AdvancedFilterModal from '../components/AdvancedFilterModal.vue'
+import CompanySearchInput from '../components/CompanySearchInput.vue'
 import ChainEnterpriseTree from '../components/ChainEnterpriseTree.vue'
 import ChinaRegionHeatmap from '../components/ChinaRegionHeatmap.vue'
 import IndustryChainFlow from '../components/IndustryChainFlow.vue'
@@ -13,13 +14,13 @@ import SectionHeading from '../components/SectionHeading.vue'
 import AuthGuestBar from '../components/AuthGuestBar.vue'
 import UserMenuDropdown from '../components/UserMenuDropdown.vue'
 import { useAuth } from '../composables/useAuth'
-import { SEARCH_HISTORY_DATALIST_ID, useSearchHistory } from '../composables/useSearchHistory'
+import { useSearchHistory } from '../composables/useSearchHistory'
 import { getCompanyDetail } from '../data/companyDetail'
 
 const route = useRoute()
 const router = useRouter()
 const { isLoggedIn } = useAuth()
-const { history: searchHistory, rememberQuery } = useSearchHistory()
+const { rememberQuery } = useSearchHistory()
 
 const faviconUrl = `${import.meta.env.BASE_URL}favicon.svg`
 
@@ -679,18 +680,7 @@ function onFilterPickCompany(name: string) {
       <div class="header-tools">
         <form class="header-search-form" @submit.prevent="onHeaderSearch">
           <div class="header-search-shell">
-            <input
-              v-model="headerQuery"
-              type="search"
-              class="header-search-input"
-              :list="SEARCH_HISTORY_DATALIST_ID"
-              placeholder="企业名称/统一社会信用代码/股东姓名"
-              autocomplete="organization"
-              enterkeyhint="search"
-            />
-            <datalist :id="SEARCH_HISTORY_DATALIST_ID">
-              <option v-for="(item, idx) in searchHistory" :key="idx" :value="item" />
-            </datalist>
+            <CompanySearchInput v-model="headerQuery" variant="header" />
             <button type="submit" class="header-search-submit">
               <svg class="header-search-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
@@ -1649,17 +1639,6 @@ function onFilterPickCompany(name: string) {
   background: #f0f2f5;
   border-radius: 999px;
   border: 1px solid #e6e9ee;
-}
-
-.header-search-input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  background: transparent;
-  font-size: 14px;
-  padding: 8px 0;
-  outline: none;
-  color: var(--db-text);
 }
 
 .header-search-submit {
