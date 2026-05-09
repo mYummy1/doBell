@@ -1,0 +1,48 @@
+:root {
+  --db-primary: #006c4d;
+  --db-primary-dark: #005239;
+  --db-primary-darker: #003d2b;
+  /** 顶栏品牌区（笃字标 + 笃北文案），与设计稿一致 */
+  --db-brand: #1a3e4c;
+  --db-text: #111827;
+  --db-muted: #6b7280;
+  --db-placeholder: #9ca3af;
+  --db-bg: #ffffff;
+  --db-border: #e8eef0;
+  --db-shadow:
+    0 12px 40px rgba(0, 82, 57, 0.08),
+    0 4px 12px rgba(0, 82, 57, 0.06);
+
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'PingFang SC',
+    'Microsoft YaHei',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--db-text);
+  background: var(--db-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}

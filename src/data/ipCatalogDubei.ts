@@ -1,0 +1,111 @@
+import type { PatentRow, SoftwareCopyrightRow, TrademarkRow } from './companyDetail'
+
+/** 安徽安大笃北信息科技有限责任公司 · 专利 */
+export const DUBEI_PATENT_ROWS: PatentRow[] = [
+  {
+    title: '一种基于大数据的媒体行为数据采集分析管理系统',
+    patentType: '发明公布',
+    legalStatus: '实质审查',
+    applicationNo: 'CN202111663337.7',
+    applicationDate: '2021-12-31',
+    publicationNo: 'CN114398340A',
+    date: '2022-04-26',
+  },
+  {
+    title: '一种基于云计算的科普内容个性化推荐系统',
+    patentType: '发明授权',
+    legalStatus: '授权',
+    applicationNo: 'CN201911411071.X',
+    applicationDate: '2019-12-31',
+    publicationNo: 'CN111159560B',
+    date: '2023-03-24',
+  },
+  {
+    title: '基于改进的监督局部线性嵌入的早期阿尔茨海默病分类方法',
+    patentType: '发明公布',
+    legalStatus: '公布驳回',
+    applicationNo: 'CN201810787550.0',
+    applicationDate: '2018-07-18',
+    publicationNo: 'CN109086809A',
+    date: '2018-12-25',
+  },
+  {
+    title: '一种基于超像素的模糊谱聚类脑肿瘤图像自动分割方法',
+    patentType: '发明授权',
+    legalStatus: '授权',
+    applicationNo: 'CN201810380400.8',
+    applicationDate: '2018-04-25',
+    publicationNo: 'CN108664976B',
+    date: '2022-06-03',
+  },
+]
+
+/** 安徽安大笃北信息科技有限责任公司 · 计算机软件著作权 */
+export const DUBEI_SOFTWARE_COPYRIGHT_ROWS: SoftwareCopyrightRow[] = [
+  { fullName: '舆情智能处置系统', shortName: '', version: 'V1.0', regNo: '2026SR0241339', devCompleteDate: '', firstPublishDate: '', regDate: '2026-02-05' },
+  { fullName: '数字化网络内容安全巡查信息管控软件', shortName: '', version: 'V1.0', regNo: '2024SR0109314', devCompleteDate: '2023-01-30', firstPublishDate: '', regDate: '2024-01-16' },
+  { fullName: '高校社群管理分析系统', shortName: '', version: 'V1.0', regNo: '2023SR1542644', devCompleteDate: '2023-01-05', firstPublishDate: '', regDate: '2023-11-30' },
+  { fullName: '高校一站式学生社区服务系统', shortName: '', version: 'V1.0', regNo: '2023SR1542448', devCompleteDate: '2023-02-10', firstPublishDate: '', regDate: '2023-11-30' },
+  { fullName: '新媒体运营综合管理信息化系统', shortName: '', version: 'V1.0', regNo: '2023SR1072671', devCompleteDate: '2023-07-07', firstPublishDate: '', regDate: '2023-09-15' },
+  { fullName: '人工智能大数据家庭医生管理平台', shortName: '', version: 'V1.0', regNo: '2021SR0140778', devCompleteDate: '', firstPublishDate: '2019-12-22', regDate: '2021-01-26' },
+  { fullName: '人工智能大数据语音控制软件', shortName: '', version: 'V1.0', regNo: '2021SR0140747', devCompleteDate: '', firstPublishDate: '2020-06-26', regDate: '2021-01-26' },
+  { fullName: '基于人工智能的商户营运管理系统', shortName: '', version: 'V1.0', regNo: '2021SR0135370', devCompleteDate: '', firstPublishDate: '2020-05-26', regDate: '2021-01-25' },
+  { fullName: '专题宣传追踪量化人工智能软件', shortName: '', version: 'V1.0', regNo: '2021SR0134189', devCompleteDate: '', firstPublishDate: '2020-04-25', regDate: '2021-01-25' },
+  { fullName: '人工智能学术溯源存证系统', shortName: '', version: 'V1.0', regNo: '2021SR0130578', devCompleteDate: '', firstPublishDate: '2019-10-31', regDate: '2021-01-25' },
+  { fullName: '新媒体大数据云服务平台', shortName: '', version: 'V1.0', regNo: '2021SR0129668', devCompleteDate: '', firstPublishDate: '2019-12-29', regDate: '2021-01-25' },
+  { fullName: '融媒体数据智能采编管理系统', shortName: '', version: 'V1.0', regNo: '2021SR0129662', devCompleteDate: '', firstPublishDate: '2020-02-09', regDate: '2021-01-25' },
+  { fullName: '新媒体技术大数据管理系统', shortName: '', version: 'V1.0', regNo: '2021SR0129558', devCompleteDate: '', firstPublishDate: '2019-12-10', regDate: '2021-01-25' },
+  { fullName: '媒体数据自然语义研判分析系统', shortName: '', version: 'V1.0', regNo: '2021SR0129557', devCompleteDate: '', firstPublishDate: '2020-02-24', regDate: '2021-01-25' },
+  { fullName: '人工智能教育多媒体语音系统', shortName: '', version: 'V1.0', regNo: '2021SR0129547', devCompleteDate: '', firstPublishDate: '2020-06-22', regDate: '2021-01-25' },
+  { fullName: '机动车驾驶员培训公众服务平台', shortName: '', version: 'V1.0', regNo: '2020SR1800830', devCompleteDate: '', firstPublishDate: '2018-04-20', regDate: '2020-12-11' },
+  { fullName: '基于LaTex的学术智能编辑排版系统', shortName: '', version: 'V1.0', regNo: '2020SR1800826', devCompleteDate: '', firstPublishDate: '2019-10-22', regDate: '2020-12-11' },
+  { fullName: '工程建设监管与信用股管理系统', shortName: '', version: 'V1.0', regNo: '2020SR1800806', devCompleteDate: '', firstPublishDate: '2018-10-23', regDate: '2020-12-11' },
+  { fullName: '工程质量检测管理系统', shortName: '', version: 'V1.0', regNo: '2020SR1800805', devCompleteDate: '', firstPublishDate: '2018-10-31', regDate: '2020-12-11' },
+  { fullName: '家庭医生数字化管理系统', shortName: '', version: 'V1.0', regNo: '2020SR1787027', devCompleteDate: '', firstPublishDate: '2019-12-18', regDate: '2020-12-10' },
+  { fullName: '基于物联网的电动定扭矩扳手移动管理系统', shortName: '', version: 'V1.0', regNo: '2020SR1787026', devCompleteDate: '', firstPublishDate: '2020-05-26', regDate: '2020-12-10' },
+  { fullName: '基于人脸识别的研究生推免及录取综合管理系统', shortName: '', version: 'V1.0', regNo: '2020SR1787025', devCompleteDate: '', firstPublishDate: '2020-07-16', regDate: '2020-12-10' },
+  { fullName: '实时舆情及新媒体数据采集监测系统', shortName: '', version: 'V1.0', regNo: '2020SR1787024', devCompleteDate: '', firstPublishDate: '2019-10-22', regDate: '2020-12-10' },
+  { fullName: '家庭医生远程视频会诊平台', shortName: '', version: 'V1.0', regNo: '2020SR1787023', devCompleteDate: '', firstPublishDate: '2019-12-18', regDate: '2020-12-10' },
+  { fullName: '舆情数据多元化分析系统', shortName: '', version: 'V1.0', regNo: '2020SR1787022', devCompleteDate: '', firstPublishDate: '2019-10-30', regDate: '2020-12-10' },
+  { fullName: '一站式数据可视化云平台', shortName: '', version: 'V1.0', regNo: '2020SR1787021', devCompleteDate: '', firstPublishDate: '2019-10-30', regDate: '2020-12-10' },
+  { fullName: '碎片化安全存储数据平台', shortName: '', version: 'V1.0', regNo: '2020SR1753295', devCompleteDate: '', firstPublishDate: '2019-10-13', regDate: '2020-12-07' },
+  { fullName: '分布式媒体行为数据实时采集系统', shortName: '', version: 'V1.0', regNo: '2020SR1574268', devCompleteDate: '', firstPublishDate: '2019-10-18', regDate: '2020-11-12' },
+  { fullName: '医加加医用版', shortName: '', version: 'V1.1', regNo: '2019SRE019725', devCompleteDate: '2019-06-20', firstPublishDate: '2019-07-01', regDate: '2019-09-11' },
+  { fullName: '医加加', shortName: '', version: 'V1.1', regNo: '2019SRE019717', devCompleteDate: '2019-06-20', firstPublishDate: '2019-07-01', regDate: '2019-09-11' },
+]
+
+/** 安徽安大笃北信息科技有限责任公司 · 商标（与公示表字段一致；图案见 public/brandmarks） */
+export const DUBEI_TRADEMARK_ROWS: TrademarkRow[] = [
+  {
+    patternUrl: 'brandmarks/trademark-spark.png',
+    name: 'SPARK',
+    status: '商标无效 · 初审驳回',
+    regNo: '29058870',
+    applicationDate: '2018-02-01',
+    intClass: '42 类 设计研究',
+  },
+  {
+    patternUrl: 'brandmarks/trademark-spark.png',
+    name: 'SPARK S',
+    status: '商标无效 · 初审驳回',
+    regNo: '29064794',
+    applicationDate: '2018-02-01',
+    intClass: '35 类 广告销售',
+  },
+  {
+    patternUrl: 'brandmarks/trademark-spark.png',
+    name: 'SPARK',
+    status: '商标无效 · 初审驳回',
+    regNo: '29067893',
+    applicationDate: '2018-02-01',
+    intClass: '9 类 科学仪器',
+  },
+  {
+    patternUrl: 'brandmarks/trademark-dobell.png',
+    name: '笃北科技 / DOBELL',
+    status: '商标无效 · 初审驳回',
+    regNo: '28217279',
+    applicationDate: '2017-12-20',
+    intClass: '42 类 设计研究',
+  },
+]
