@@ -17,12 +17,13 @@ import {
   type IndustryLeaf,
 } from '../data/industryAnalysisCatalog'
 import {
-  IA_FINANCING_ROWS,
-  IA_KEY_ENTERPRISES,
-  IA_POLICY_ROWS,
-  IA_PORTRAIT_AXES,
-  INDUSTRY_ANALYSIS_DETAIL_NAV,
-} from '../data/industryAnalysisNav'
+  iaFeaturePanelLead,
+  iaFinancingForLeaf,
+  iaKeyEnterprisesForLeaf,
+  iaPoliciesForLeaf,
+  iaPortraitAxesBaseForLeaf,
+} from '../data/industryLeafContent'
+import { INDUSTRY_ANALYSIS_DETAIL_NAV } from '../data/industryAnalysisNav'
 
 const faviconUrl = `${import.meta.env.BASE_URL}favicon.svg`
 const { isLoggedIn } = useAuth()
@@ -63,14 +64,14 @@ const trackLabelShort = computed(() => {
   return `${t.group.title} · ${t.leaf.name}`
 })
 
-function portraitAxesFromLeafId(leafId: string) {
+function portraitAxesFromBase(leafId: string, base: readonly { label: string; value: number }[]) {
   let h = 2166136261
   for (let i = 0; i < leafId.length; i++) {
     h ^= leafId.charCodeAt(i)
     h = Math.imul(h, 16777619)
   }
   const u = h >>> 0
-  return IA_PORTRAIT_AXES.map((a, i) => {
+  return base.map((a, i) => {
     const jitter = ((u >> (i * 2)) & 15) - 7
     return {
       label: a.label,
@@ -79,11 +80,20 @@ function portraitAxesFromLeafId(leafId: string) {
   })
 }
 
+const activeLeafId = computed(() => selectedTrack.value?.leaf.id)
+
 const portraitAxesForSelected = computed(() => {
-  const t = selectedTrack.value
-  if (!t) return [...IA_PORTRAIT_AXES]
-  return portraitAxesFromLeafId(t.leaf.id)
+  const id = activeLeafId.value
+  const base = iaPortraitAxesBaseForLeaf(id)
+  if (!id) return [...base]
+  return portraitAxesFromBase(id, [...base])
 })
+
+const policyRowsForTrack = computed(() => iaPoliciesForLeaf(activeLeafId.value))
+
+const keyEnterprisesForTrack = computed(() => iaKeyEnterprisesForLeaf(activeLeafId.value))
+
+const financingRowsForTrack = computed(() => iaFinancingForLeaf(activeLeafId.value))
 
 const portraitSeriesName = computed(() =>
   selectedTrack.value ? `${selectedTrack.value.leaf.name} · 产业竞争力` : '产业竞争力'
@@ -187,7 +197,7 @@ onBeforeUnmount(() => {
     <header class="ia2-top">
       <RouterLink to="/" class="ia2-brand">
         <img class="ia2-logo" :src="faviconUrl" alt="" width="40" height="40" />
-        <span class="ia2-brand-txt">笃北科技-企业AI智能体数据平台</span>
+        <span class="ia2-brand-txt">企业 AI 智能体数据平台</span>
       </RouterLink>
       <div class="ia2-top-meta">
         <AuthGuestBar v-if="!isLoggedIn" />
@@ -234,7 +244,6 @@ onBeforeUnmount(() => {
               </button>
               <p class="ia2-current-track" title="当前分析赛道">{{ trackLabelShort }}</p>
               <p class="ia2-nav-group-title">赛道分析</p>
-              <p class="ia2-nav-hint">以下模块均基于当前所选子赛道（演示）。</p>
               <nav class="ia2-feature-nav" aria-label="赛道分析模块">
                 <button
                   v-for="item in INDUSTRY_ANALYSIS_DETAIL_NAV"
@@ -326,8 +335,7 @@ onBeforeUnmount(() => {
               <p class="ia2-track-strip-title">{{ trackLabelShort }}</p>
             </div>
             <p class="ia2-track-strip-meta">
-              演示样本：在营主体约
-              <strong>{{ formatFirmCount(selectedLeafFirmCount) }}</strong> 家（本赛道）
+              <strong>{{ formatFirmCount(selectedLeafFirmCount) }}</strong> 家
             </p>
           </div>
 
@@ -338,6 +346,7 @@ onBeforeUnmount(() => {
                 <path d="M7 21c0-3 3-6 8-6h2" stroke="currentColor" stroke-width="1.75" />
               </svg>
             </SectionHeading>
+            <p class="ia2-panel-lead">{{ iaFeaturePanelLead('ia-feature-portrait', activeLeafId) }}</p>
             <div class="ia2-viz">
               <IndustryPortraitRadar
                 :visible="detailChartsVisible"
@@ -356,8 +365,9 @@ onBeforeUnmount(() => {
                 <path d="M8.5 12h5M13 10l4-4M13 14l4 4" stroke="currentColor" stroke-width="1.5" />
               </svg>
             </SectionHeading>
+            <p class="ia2-panel-lead">{{ iaFeaturePanelLead('ia-feature-chain', activeLeafId) }}</p>
             <div class="ia2-viz ia2-viz--tall">
-              <ChainEnterpriseTree :visible="detailChartsVisible" />
+              <ChainEnterpriseTree :visible="detailChartsVisible" :industry-leaf-id="activeLeafId" />
             </div>
           </section>
 
@@ -371,10 +381,10 @@ onBeforeUnmount(() => {
                 />
               </svg>
             </SectionHeading>
-            <p class="ia2-panel-lead">点击企业名称可跳转至企业详情（演示名录）。</p>
+            <p class="ia2-panel-lead">{{ iaFeaturePanelLead('ia-feature-key', activeLeafId) }}</p>
             <div class="ia2-key-chips" role="list">
               <button
-                v-for="(row, i) in IA_KEY_ENTERPRISES"
+                v-for="(row, i) in keyEnterprisesForTrack"
                 :key="i"
                 type="button"
                 class="ia2-key-chip"
@@ -395,8 +405,9 @@ onBeforeUnmount(() => {
                 <path d="M9 13h6m0-5v13" stroke="currentColor" stroke-width="1.5" />
               </svg>
             </SectionHeading>
+            <p class="ia2-panel-lead">{{ iaFeaturePanelLead('ia-feature-graph', activeLeafId) }}</p>
             <div class="ia2-viz">
-              <IndustryChainFlow />
+              <IndustryChainFlow :industry-leaf-id="activeLeafId" />
             </div>
           </section>
 
@@ -411,8 +422,9 @@ onBeforeUnmount(() => {
                 />
               </svg>
             </SectionHeading>
+            <p class="ia2-panel-lead">{{ iaFeaturePanelLead('ia-feature-region', activeLeafId) }}</p>
             <div class="ia2-viz ia2-viz--heatmap">
-              <ChinaRegionHeatmap :visible="detailChartsVisible" />
+              <ChinaRegionHeatmap :visible="detailChartsVisible" :industry-leaf-id="activeLeafId" />
             </div>
           </section>
 
@@ -422,8 +434,9 @@ onBeforeUnmount(() => {
                 <path d="M6 4h11v14H9l-5 5V4zM9 9h8M9 13h8" stroke="currentColor" stroke-width="1.75" />
               </svg>
             </SectionHeading>
+            <p class="ia2-panel-lead">{{ iaFeaturePanelLead('ia-feature-policy', activeLeafId) }}</p>
             <ul class="ia2-policy-list">
-              <li v-for="(row, i) in IA_POLICY_ROWS" :key="i" class="ia2-policy-row">
+              <li v-for="(row, i) in policyRowsForTrack" :key="i" class="ia2-policy-row">
                 <a class="ia2-policy-link" :href="row.url" target="_blank" rel="noopener noreferrer">{{
                   row.title
                 }}</a>
@@ -445,9 +458,10 @@ onBeforeUnmount(() => {
                 />
               </svg>
             </SectionHeading>
+            <p class="ia2-panel-lead">{{ iaFeaturePanelLead('ia-feature-finance', activeLeafId) }}</p>
             <div class="ia2-finance-wrap">
               <ul class="ia2-finance-list">
-                <li v-for="(row, i) in IA_FINANCING_ROWS" :key="i" class="ia2-finance-card">
+                <li v-for="(row, i) in financingRowsForTrack" :key="i" class="ia2-finance-card">
                   <div class="ia2-finance-top">
                     <span class="ia2-finance-round">{{ row.round }}</span>
                     <time class="ia2-finance-date" :datetime="row.date">{{ row.date }}</time>

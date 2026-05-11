@@ -3,7 +3,7 @@ import { ref } from 'vue'
 /** 存在且为 `1` 表示用户已主动退出，展示访客登录/注册；缺省为已登录 */
 const STORAGE_GUEST_KEY = 'db-auth-guest'
 
-export const USER_DISPLAY_NAME = '王小满'
+export const USER_DISPLAY_NAME = 'admin'
 
 function readStored(): boolean {
   try {

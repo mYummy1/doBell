@@ -2,10 +2,13 @@
 import * as echarts from 'echarts'
 import type { ECharts, EChartsOption } from 'echarts'
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { NEV_BATTERY_LEAF_ID } from '../data/industryLeafContent'
 
 const props = withDefaults(
   defineProps<{
     visible?: boolean
+    /** 产业分析子赛道 id，锂电池等切换树结构 */
+    industryLeafId?: string
   }>(),
   { visible: true }
 )
@@ -14,7 +17,7 @@ const chartRef = ref<HTMLDivElement | null>(null)
 let chart: ECharts | null = null
 let resizeObs: ResizeObserver | null = null
 
-const TREE_ROOT = {
+const TREE_AI = {
   name: 'AI产业链',
   symbolSize: 18,
   itemStyle: {
@@ -53,9 +56,73 @@ const TREE_ROOT = {
       symbolSize: 12,
       itemStyle: { color: '#ecfdf5', borderColor: '#059669', borderWidth: 1.5 },
       label: { fontWeight: 600 },
-      children: [{ name: '行业解决方案商', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } }],
+      children: [{ name: '行业方案\n服务商', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } }],
     },
   ],
+}
+
+const TREE_BATTERY = {
+  name: '锂电产业链',
+  symbolSize: 18,
+  itemStyle: {
+    color: '#006c4d',
+    borderColor: '#005239',
+    borderWidth: 2,
+  },
+  label: {
+    fontSize: 13,
+    fontWeight: 700,
+    color: '#0f172a',
+  },
+  children: [
+    {
+      name: '上游',
+      symbolSize: 12,
+      itemStyle: { color: '#ecfdf5', borderColor: '#059669', borderWidth: 1.5 },
+      label: { fontWeight: 600 },
+      children: [
+        { name: '锂镍钴资源', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+        { name: '正极·负极\n材料', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+        { name: '隔膜\n电解液', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+      ],
+    },
+    {
+      name: '中游',
+      symbolSize: 12,
+      itemStyle: { color: '#ecfdf5', borderColor: '#059669', borderWidth: 1.5 },
+      label: { fontWeight: 600 },
+      children: [
+        { name: '电芯制造', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+        { name: '模组\nPACK', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+        { name: 'BMS\n热管理', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+      ],
+    },
+    {
+      name: '下游',
+      symbolSize: 12,
+      itemStyle: { color: '#ecfdf5', borderColor: '#059669', borderWidth: 1.5 },
+      label: { fontWeight: 600 },
+      children: [
+        { name: '新能源汽车', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+        { name: '储能系统', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+        { name: '消费电子\n电动工具', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+      ],
+    },
+    {
+      name: '回收\n梯次',
+      symbolSize: 12,
+      itemStyle: { color: '#ecfdf5', borderColor: '#059669', borderWidth: 1.5 },
+      label: { fontWeight: 600 },
+      children: [
+        { name: '拆解检测', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+        { name: '再生·梯次\n利用', symbolSize: 8, itemStyle: { color: '#fff', borderColor: '#006c4d' } },
+      ],
+    },
+  ],
+}
+
+function treeRootForLeaf(leafId?: string) {
+  return leafId === NEV_BATTERY_LEAF_ID ? TREE_BATTERY : TREE_AI
 }
 
 function buildOption(): EChartsOption {
@@ -77,7 +144,7 @@ function buildOption(): EChartsOption {
       {
         type: 'tree',
         name: '产业链',
-        data: [TREE_ROOT],
+        data: [treeRootForLeaf(props.industryLeafId)],
         roam: true,
         layout: 'orthogonal',
         orient: 'TB',
@@ -91,7 +158,7 @@ function buildOption(): EChartsOption {
         left: '8%',
         bottom: '8%',
         right: '8%',
-        zoom: 0.88,
+        zoom: 0.78,
         emphasis: {
           focus: 'descendant',
           blurScope: 'coordinateSystem',
@@ -102,15 +169,21 @@ function buildOption(): EChartsOption {
         },
         label: {
           position: 'top',
-          distance: 6,
-          fontSize: 11,
+          distance: 8,
+          fontSize: 10,
           color: '#334155',
+          width: 88,
+          overflow: 'break',
+          lineHeight: 14,
         },
         leaves: {
           label: {
             position: 'bottom',
-            distance: 5,
-            fontSize: 11,
+            distance: 7,
+            fontSize: 10,
+            width: 92,
+            overflow: 'break',
+            lineHeight: 13,
           },
         },
         lineStyle: {
@@ -139,6 +212,11 @@ function initChart() {
   resizeObs.observe(el)
 }
 
+function refreshChart() {
+  if (!chart) return
+  chart.setOption(buildOption(), { replaceMerge: ['series'] })
+}
+
 watch(
   () => props.visible,
   async (visible) => {
@@ -149,6 +227,16 @@ watch(
     else chart.resize()
   },
   { immediate: true }
+)
+
+watch(
+  () => props.industryLeafId,
+  async () => {
+    if (!props.visible) return
+    await nextTick()
+    if (!chart) initChart()
+    else refreshChart()
+  }
 )
 
 onBeforeUnmount(() => {
@@ -162,7 +250,7 @@ onBeforeUnmount(() => {
       ref="chartRef"
       class="chain-enterprise-tree__canvas"
       role="img"
-      aria-label="AI 产业链树形结构"
+      :aria-label="industryLeafId === NEV_BATTERY_LEAF_ID ? '锂电池产业链树形结构' : 'AI 产业链树形结构'"
     />
   </div>
 </template>
@@ -173,7 +261,7 @@ onBeforeUnmount(() => {
 }
 .chain-enterprise-tree__canvas {
   width: 100%;
-  height: min(56vh, 420px);
-  min-height: 300px;
+  height: min(58vh, 460px);
+  min-height: 340px;
 }
 </style>

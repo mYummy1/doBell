@@ -2,25 +2,7 @@
 import * as echarts from 'echarts'
 import type { ECharts, EChartsOption } from 'echarts'
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
-
-const props = withDefaults(
-  defineProps<{
-    /** 与详情页 v-show 联动，进入区块后再初始化并 resize，避免尺寸为 0 */
-    visible?: boolean
-  }>(),
-  { visible: true }
-)
-
-const chartRef = ref<HTMLDivElement | null>(null)
-const status = ref<'idle' | 'loading' | 'ready' | 'error'>('idle')
-const errorMsg = ref('')
-
-let chart: ECharts | null = null
-let resizeObs: ResizeObserver | null = null
-let mapRegistered = false
-
-/** 随构建置于站点根目录（public/geo/china.json），离线可用 */
-const GEO_URL = `${import.meta.env.BASE_URL}geo/china.json`
+import { BATTERY_REGION_HEAT, NEV_BATTERY_LEAF_ID } from '../data/industryLeafContent'
 
 interface GeoFeature {
   properties?: { name?: string }
@@ -29,6 +11,28 @@ interface GeoFeature {
 interface GeoJsonLike {
   features: GeoFeature[]
 }
+
+const props = withDefaults(
+  defineProps<{
+    /** 与详情页 v-show 联动，进入区块后再初始化并 resize，避免尺寸为 0 */
+    visible?: boolean
+    /** 产业分析子赛道：锂电池等使用差异化省级热度示意 */
+    industryLeafId?: string
+  }>(),
+  { visible: true }
+)
+
+const chartRef = ref<HTMLDivElement | null>(null)
+const status = ref<'idle' | 'loading' | 'ready' | 'error'>('idle')
+const errorMsg = ref('')
+const geoJsonCache = ref<GeoJsonLike | null>(null)
+
+let chart: ECharts | null = null
+let resizeObs: ResizeObserver | null = null
+let mapRegistered = false
+
+/** 随构建置于站点根目录（public/geo/china.json），离线可用 */
+const GEO_URL = `${import.meta.env.BASE_URL}geo/china.json`
 
 /** 由省级名称映射为稳定热度指标 */
 function heatFromRegionName(name: string): number {
@@ -41,12 +45,20 @@ function heatFromRegionName(name: string): number {
   return Math.round(22 + (u / 10000) * 76)
 }
 
-function buildSeriesData(geoJson: GeoJsonLike) {
+function heatForProvince(name: string, leafId?: string): number {
+  if (leafId === NEV_BATTERY_LEAF_ID) {
+    const v = BATTERY_REGION_HEAT[name]
+    if (v !== undefined) return v
+  }
+  return heatFromRegionName(name)
+}
+
+function buildSeriesData(geoJson: GeoJsonLike, leafId?: string) {
   return geoJson.features
     .map((f) => {
       const name = f.properties?.name
       if (!name) return null
-      return { name, value: heatFromRegionName(name) }
+      return { name, value: heatForProvince(name, leafId) }
     })
     .filter((x): x is { name: string; value: number } => x !== null)
 }
@@ -68,13 +80,14 @@ async function initChart() {
     const res = await fetch(GEO_URL)
     if (!res.ok) throw new Error(`地图数据加载失败（${res.status}）`)
     const geoJson = (await res.json()) as GeoJsonLike
+    geoJsonCache.value = geoJson
 
     if (!mapRegistered) {
       echarts.registerMap('china', geoJson as Parameters<typeof echarts.registerMap>[1])
       mapRegistered = true
     }
 
-    const data = buildSeriesData(geoJson)
+    const data = buildSeriesData(geoJson, props.industryLeafId)
 
     chart = echarts.init(el, undefined, { renderer: 'canvas' })
 
@@ -168,8 +181,20 @@ watch(
   { immediate: true }
 )
 
+watch(
+  () => props.industryLeafId,
+  async () => {
+    if (!props.visible || !chart || !geoJsonCache.value) return
+    await nextTick()
+    chart.setOption({
+      series: [{ data: buildSeriesData(geoJsonCache.value, props.industryLeafId) }],
+    })
+  }
+)
+
 onBeforeUnmount(() => {
   disposeChart()
+  geoJsonCache.value = null
 })
 </script>
 
@@ -179,7 +204,11 @@ onBeforeUnmount(() => {
       ref="chartRef"
       class="heatmap-chart"
       role="img"
-      aria-label="中国省级区域产业热度示意图"
+      :aria-label="
+        industryLeafId === NEV_BATTERY_LEAF_ID
+          ? '中国省级锂电产业链热度分布'
+          : '中国省级区域产业热度分布'
+      "
     />
     <div v-if="status === 'loading'" class="heatmap-overlay">地图加载中…</div>
     <div v-else-if="status === 'error'" class="heatmap-overlay heatmap-overlay--error">

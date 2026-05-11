@@ -73,7 +73,7 @@ const useCases = [
     <header class="feature-header">
       <RouterLink to="/" class="brand">
         <img class="brand-logo" :src="faviconUrl" alt="" width="40" height="40" />
-        <span class="brand-title">笃北科技-企业AI智能体数据平台</span>
+        <span class="brand-title">企业 AI 智能体数据平台</span>
       </RouterLink>
       <AuthGuestBar v-if="!isLoggedIn" />
       <UserMenuDropdown v-else />
@@ -81,7 +81,7 @@ const useCases = [
 
     <main class="feature-main">
       <p class="feature-kicker">全链路视角</p>
-      <h1 class="feature-title">供应链分析</h1>
+      <h1 class="feature-title">供应链洞察</h1>
 
       <section class="feature-section" aria-labelledby="sc-dim-heading">
         <h2 id="sc-dim-heading" class="feature-section-title">分析维度</h2>

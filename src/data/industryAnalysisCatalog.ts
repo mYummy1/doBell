@@ -18,7 +18,7 @@ export const INDUSTRY_ANALYSIS_CATALOG: readonly IndustryGroup[] = [
     id: 'nev',
     title: '新能源汽车',
     children: [
-      { id: 'nev-battery', name: '锂电池', firmCount: 43234 },
+      { id: 'nev-battery', name: '锂电池', firmCount: 41860 },
       { id: 'nev-icv', name: '智能网联汽车', firmCount: 28156 },
     ],
   },

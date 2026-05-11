@@ -697,7 +697,7 @@ function onFilterPickCompany(name: string) {
           width="40"
           height="40"
         />
-        <span class="brand-title">笃北科技-企业AI智能体数据平台</span>
+        <span class="brand-title">企业 AI 智能体数据平台</span>
       </RouterLink>
 
       <div class="header-tools">
@@ -1512,7 +1512,7 @@ function onFilterPickCompany(name: string) {
         </section>
 
         <section id="sec-supply-chain" v-show="activeNavAnchor === 'sec-supply-chain'" class="card section-card anchor-target">
-          <SectionHeading title="供应链分析">
+          <SectionHeading title="供应链洞察">
             <svg viewBox="0 0 24 24" fill="none"><path d="M14 18V8H4v10M14 18h4l3-4v-4h-4" stroke="currentColor" stroke-width="1.75"/></svg>
           </SectionHeading>
           

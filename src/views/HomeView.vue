@@ -84,7 +84,7 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
           width="40"
           height="40"
         />
-        <span class="brand-title">笃北科技-企业AI智能体数据平台</span>
+        <span class="brand-title">企业 AI 智能体数据平台</span>
       </div>
 
       <AuthGuestBar v-if="!isLoggedIn" />
@@ -122,7 +122,7 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
         </span>
       </h1>
       <p class="subhead">
-        输入企业名称，获取工商信息、司法风险、产业链深度分析
+        一查主体脉络 · 纵观产业纵深
       </p>
 
       <form class="search-form" @submit.prevent="onSearch">
@@ -210,8 +210,8 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
               </svg>
             </span>
             <span class="hero-action-main">
-              <span class="hero-action-title">供应链分析</span>
-              <span class="hero-action-desc">上下游与集中度洞察</span>
+              <span class="hero-action-title">供应链洞察</span>
+              <span class="hero-action-desc">上下游与集中度透视</span>
             </span>
             <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -466,10 +466,10 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
 
 .subhead {
   margin: 0 0 40px;
-  max-width: 520px;
+  max-width: 560px;
   font-size: 15px;
   color: var(--db-muted);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .search-form {

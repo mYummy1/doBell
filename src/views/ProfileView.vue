@@ -29,7 +29,7 @@ watch(
           width="40"
           height="40"
         />
-        <span class="brand-title">笃北科技-企业AI智能体数据平台</span>
+        <span class="brand-title">企业 AI 智能体数据平台</span>
       </RouterLink>
       <AuthGuestBar v-if="!isLoggedIn" />
       <UserMenuDropdown v-else />
