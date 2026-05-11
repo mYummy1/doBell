@@ -7,6 +7,7 @@ import ChainEnterpriseTree from '../components/ChainEnterpriseTree.vue'
 import ChinaRegionHeatmap from '../components/ChinaRegionHeatmap.vue'
 import IndustryChainFlow from '../components/IndustryChainFlow.vue'
 import IndustryPortraitRadar from '../components/IndustryPortraitRadar.vue'
+import JudicialRiskModule from '../components/JudicialRiskModule.vue'
 import SentimentMonitorDashboard from '../components/SentimentMonitorDashboard.vue'
 import NavMenuIcon from '../components/NavMenuIcon.vue'
 import RelationPenetrateChart from '../components/RelationPenetrateChart.vue'
@@ -16,6 +17,7 @@ import UserMenuDropdown from '../components/UserMenuDropdown.vue'
 import { useAuth } from '../composables/useAuth'
 import { useSearchHistory } from '../composables/useSearchHistory'
 import { getCompanyDetail } from '../data/companyDetail'
+import { JUDICIAL_RISK_MODULE_DEFS, getJudicialTableDemo } from '../data/judicialRiskCatalog'
 
 const route = useRoute()
 const router = useRouter()
@@ -845,16 +847,17 @@ function onFilterPickCompany(name: string) {
         </div>
 
         <!-- 知识管理 -->
-        <section id="sec-legal-risk" v-show="activeNavAnchor === 'sec-legal-risk'" class="card section-card anchor-target">
+        <section id="sec-legal-risk" v-show="activeNavAnchor === 'sec-legal-risk'" class="card section-card anchor-target judicial-risk-section">
           <SectionHeading title="司法风险">
             <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l9 4v5c0 5-4 10-9 11-5-1-9-6-9-11V7l9-4z" stroke="currentColor" stroke-width="1.75"/></svg>
           </SectionHeading>
-          <div v-if="company.risksEmpty" class="empty-soft">暂无法律诉讼数据</div>
-          <div v-else class="tbl-scroll">
-            <table class="plain-table">
-              <thead><tr><th>类型</th><th>案由 / 摘要</th><th>日期</th></tr></thead>
-              <tbody><tr><td>裁判文书</td><td>买卖合同纠纷</td><td>2024-08-12</td></tr></tbody>
-            </table>
+          <div class="judicial-risk-stack">
+            <JudicialRiskModule
+              v-for="mod in JUDICIAL_RISK_MODULE_DEFS"
+              :key="mod.key"
+              :config="mod"
+              :table="getJudicialTableDemo(company.name, company.risksEmpty, mod.key)"
+            />
           </div>
         </section>
 
@@ -2128,6 +2131,13 @@ function onFilterPickCompany(name: string) {
   font-size: 14px;
   color: #94a3b8;
   padding: 8px 0;
+}
+
+.judicial-risk-stack {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .relation-summary {
