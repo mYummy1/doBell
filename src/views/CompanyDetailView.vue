@@ -257,7 +257,15 @@ const industryInsightItems = [
 
 const DUBEI_COMPANY_NAME = '安徽安大笃北信息科技有限责任公司'
 
-type BizDynamicsRow = { date: string; type: string; title: string; detail: string }
+type BizDynamicsRow = {
+  date: string
+  type: string
+  title: string
+  /** 纯文案（与 fields 二选一或仅存文案条目） */
+  detail?: string
+  /** 结构化字段，版式更易扫读 */
+  fields?: { label: string; value: string }[]
+}
 type BiddingRow = { project: string; role: string; amount: string; purchaser: string; date: string }
 type FinanceRow = { round: string; amount: string; investors: string; date: string }
 
@@ -293,21 +301,34 @@ const dubeiBusinessDynamicsItems: BizDynamicsRow[] = [
     date: '2020-11-12',
     type: '资质证书',
     title: '质量管理体系认证',
-    detail:
-      '证书编号 UKS002-2020Q0994；发证机构：优卡斯国际认证（深圳）有限公司；发证日期 2020-11-12，有效期至 2023-11-11。证书状态：撤销。',
+    fields: [
+      { label: '证书编号', value: 'UKS002-2020Q0994' },
+      { label: '发证机构', value: '优卡斯国际认证（深圳）有限公司' },
+      { label: '发证日期', value: '2020-11-12' },
+      { label: '有效期至', value: '2023-11-11' },
+      { label: '证书状态', value: '撤销' },
+    ],
   },
   {
     date: '2023-05-23',
     type: '行政许可',
     title: '增值税防伪税控系统最高开票限额审批',
-    detail:
-      '决定文书／许可编号：[合高新税]许变准字[2023]第[361]号；有效期自 2023-05-23 至 2099-12-31。许可机关：国家税务总局合肥高新技术产业开发区税务局。数据来源：国家税务总局合肥市税务局。',
+    fields: [
+      { label: '决定文书 / 许可编号', value: '[合高新税]许变准字[2023]第[361]号' },
+      { label: '有效期', value: '2023-05-23 至 2099-12-31' },
+      { label: '许可机关', value: '国家税务总局合肥高新技术产业开发区税务局' },
+      { label: '数据来源', value: '国家税务总局合肥市税务局' },
+    ],
   },
   {
     date: '2015-08-04',
     type: '创投融资',
     title: '天使轮融资',
-    detail: '融资金额 330 万元；企业估值未披露；投资方：众投基金、寰景科技。',
+    fields: [
+      { label: '融资金额', value: '330 万元' },
+      { label: '企业估值', value: '未披露' },
+      { label: '投资方', value: '众投基金、寰景科技' },
+    ],
   },
 ]
 
@@ -954,7 +975,17 @@ function onFilterPickCompany(name: string) {
                     <span class="biz-timeline-type">{{ row.type }}</span>
                   </div>
                   <h4 class="biz-timeline-title">{{ row.title }}</h4>
-                  <p class="biz-timeline-detail">{{ row.detail }}</p>
+                  <ul v-if="row.fields?.length" class="biz-timeline-fields">
+                    <li
+                      v-for="(f, j) in row.fields"
+                      :key="`${f.label}-${j}`"
+                      class="biz-timeline-field"
+                    >
+                      <span class="biz-timeline-field-label">{{ f.label }}</span>
+                      <span class="biz-timeline-field-value">{{ f.value }}</span>
+                    </li>
+                  </ul>
+                  <p v-else-if="row.detail" class="biz-timeline-detail">{{ row.detail }}</p>
                 </div>
               </li>
             </ul>
@@ -1149,7 +1180,7 @@ function onFilterPickCompany(name: string) {
                 </div>
               </div>
               <template v-if="company.trademarks.length">
-                <p class="ip-tm-table-label">商标：</p>
+               
                 <div class="tbl-scroll ip-table-scroll">
                   <table class="plain-table ip-data-table ip-table-tm">
                     <thead>
@@ -2757,11 +2788,45 @@ function onFilterPickCompany(name: string) {
 }
 
 .biz-timeline-title {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: 14px;
   font-weight: 600;
   color: #0f172a;
   line-height: 1.4;
+}
+
+.biz-timeline-fields {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px 20px;
+  list-style: none;
+}
+
+.biz-timeline-field {
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.biz-timeline-field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.02em;
+}
+
+.biz-timeline-field-value {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #334155;
+  word-break: break-word;
 }
 
 .biz-timeline-detail {
