@@ -1,4 +1,4 @@
-# 笃北科技 · 企业 AI 智能体数据平台
+# 笃北科技 · 灵枢数据一体化平台
 
 Vue 3 + TypeScript + Vite。本地开发：`npm install` → `npm run dev`。生产构建：`npm run build`（产物在 `dist/`）。
 

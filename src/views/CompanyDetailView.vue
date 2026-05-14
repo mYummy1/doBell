@@ -38,6 +38,9 @@ const company = computed(() =>
 
 const headerQuery = ref('')
 const activeNavAnchor = ref('sec-basic-info')
+/** 侧栏分组折叠（对齐「企业基本信息 / 企业知识管理」结构） */
+const navGroupBasicOpen = ref(false)
+const navGroupKnowledgeOpen = ref(true)
 const filterOpen = ref(false)
 
 watch(
@@ -613,22 +616,43 @@ const supplyDownstreamItems = [
   { name: '两家国资控股智慧城市运营商', category: '系统集成', relation: '渠道合作' },
 ] as const
 
-/** 企业概览侧栏：平铺子菜单（含舆情监测） */
-const OVERVIEW_NAV_ITEMS = [
-  { label: '基本信息', anchor: 'sec-basic-info' },
+/** 企业概览侧栏：分组 + 子项（图一信息架构） */
+const OVERVIEW_NAV_GROUPS = [
+  {
+    id: 'basic',
+    title: '企业基本信息',
+    icon: 'building' as const,
+    items: [{ label: '基本信息', anchor: 'sec-basic-info' }],
+  },
+  {
+    id: 'knowledge',
+    title: '企业知识管理',
+    icon: 'list' as const,
+    items: [
       { label: '司法风险', anchor: 'sec-legal-risk' },
-  { label: '关联关系穿透', anchor: 'sec-relation-penetrate' },
+      { label: '关联穿透', anchor: 'sec-relation-penetrate' },
       { label: '经营动态', anchor: 'sec-business-dynamics' },
       { label: '招投标', anchor: 'sec-bidding' },
-  { label: '企业标签', anchor: 'sec-tags' },
+      { label: '企业标签管理', anchor: 'sec-tags' },
       { label: '知识产权', anchor: 'sec-ip' },
       { label: '对外投资', anchor: 'sec-invest' },
-  { label: '舆情监测', anchor: 'sec-sentiment-monitor' },
+      { label: '舆情监测', anchor: 'sec-sentiment-monitor' },
+    ],
+  },
 ] as const
+
+const OVERVIEW_NAV_ANCHORS = OVERVIEW_NAV_GROUPS.flatMap((g) => g.items.map((i) => i.anchor))
+
+function syncNavGroupsForAnchor(anchor: string) {
+  const inBasic = OVERVIEW_NAV_GROUPS[0].items.some((i) => i.anchor === anchor)
+  const inKnowledge = OVERVIEW_NAV_GROUPS[1].items.some((i) => i.anchor === anchor)
+  if (inBasic) navGroupBasicOpen.value = true
+  if (inKnowledge) navGroupKnowledgeOpen.value = true
+}
 
 /** 详情页主内容存在的区块 id（URL hash / 首页快捷入口仍可达侧栏未列出的板块） */
 const HASHABLE_SECTION_ANCHORS = new Set<string>([
-  ...OVERVIEW_NAV_ITEMS.map((i) => i.anchor),
+  ...OVERVIEW_NAV_ANCHORS,
   'sec-industry-overview',
   'sec-industry-portrait',
   'sec-chain-enterprises',
@@ -653,6 +677,7 @@ watch(
     headerQuery.value = companyName.value
     const fromHash = anchorFromRouteHash(route.hash)
     activeNavAnchor.value = fromHash ?? 'sec-basic-info'
+    syncNavGroupsForAnchor(activeNavAnchor.value)
     overviewDonutSelectedIndex.value = null
     overviewDonutHoverIndex.value = null
   },
@@ -664,12 +689,16 @@ watch(
   () => {
     if (!company.value) return
     const a = anchorFromRouteHash(route.hash)
-    if (a) activeNavAnchor.value = a
+    if (a) {
+      activeNavAnchor.value = a
+      syncNavGroupsForAnchor(a)
+    }
   }
 )
 
 function onNavLeafClick(anchor: string) {
   activeNavAnchor.value = anchor
+  syncNavGroupsForAnchor(anchor)
   router.replace({ query: { ...route.query }, hash: `#${anchor}` })
 }
 
@@ -697,7 +726,7 @@ function onFilterPickCompany(name: string) {
           width="40"
           height="40"
         />
-        <span class="brand-title">企业 AI 智能体数据平台</span>
+        <span class="brand-title">灵枢数据一体化平台</span>
       </RouterLink>
 
       <div class="header-tools">
@@ -736,22 +765,63 @@ function onFilterPickCompany(name: string) {
 
     <div class="detail-shell">
       <aside class="side-nav" aria-label="侧边导航">
-        <div class="overview-nav-head">
-          <NavMenuIcon name="building" />
-          <span class="overview-nav-title">企业概览</span>
-        </div>
         <nav class="overview-nav-list" aria-label="企业概览目录">
+          <div
+            v-for="group in OVERVIEW_NAV_GROUPS"
+            :key="group.id"
+            class="acc-unit"
+          >
             <button
-            v-for="item in OVERVIEW_NAV_ITEMS"
-            :key="item.anchor"
               type="button"
-            class="overview-nav-link"
-            :class="{ 'is-current': activeNavAnchor === item.anchor }"
-            @click="onNavLeafClick(item.anchor)"
+              class="acc-trigger"
+              :class="{
+                'is-expanded':
+                  (group.id === 'basic' && navGroupBasicOpen) ||
+                  (group.id === 'knowledge' && navGroupKnowledgeOpen),
+              }"
+              :aria-expanded="
+                group.id === 'basic' ? navGroupBasicOpen : navGroupKnowledgeOpen
+              "
+              @click="
+                group.id === 'basic'
+                  ? (navGroupBasicOpen = !navGroupBasicOpen)
+                  : (navGroupKnowledgeOpen = !navGroupKnowledgeOpen)
+              "
+            >
+              <span class="acc-trigger-inner">
+                <NavMenuIcon :name="group.icon" />
+                <span class="acc-trigger-title">{{ group.title }}</span>
+              </span>
+              <svg class="acc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M6 9l6 6 6-6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <div
+              v-show="
+                (group.id === 'basic' && navGroupBasicOpen) ||
+                (group.id === 'knowledge' && navGroupKnowledgeOpen)
+              "
+              class="acc-body"
+            >
+              <button
+                v-for="item in group.items"
+                :key="item.anchor"
+                type="button"
+                class="acc-sublink"
+                :class="{ 'is-current': activeNavAnchor === item.anchor }"
+                @click="onNavLeafClick(item.anchor)"
               >
                 <span class="acc-dot" aria-hidden="true" />
-            {{ item.label }}
+                {{ item.label }}
               </button>
+            </div>
+          </div>
         </nav>
       </aside>
 
@@ -1823,8 +1893,8 @@ function onFilterPickCompany(name: string) {
 .overview-nav-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 6px 0 12px;
+  gap: 0;
+  padding: 4px 0 12px;
 }
 
 .overview-nav-link {
@@ -1867,10 +1937,18 @@ function onFilterPickCompany(name: string) {
 }
 
 .acc-unit {
-  margin-bottom: 8px;
-  border: 1px solid #eef0f4;
-  border-radius: 10px;
-  background: #fff;
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 1px solid #eef0f3;
+  padding-bottom: 2px;
+  margin-bottom: 4px;
+}
+
+.acc-unit:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .acc-trigger {
@@ -1879,10 +1957,10 @@ function onFilterPickCompany(name: string) {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 11px 10px;
+  padding: 11px 8px 11px 4px;
   border: none;
-  background: #fff;
-  border-radius: 10px;
+  background: transparent;
+  border-radius: 8px;
   cursor: pointer;
   text-align: left;
   font-size: 14px;
@@ -1890,11 +1968,19 @@ function onFilterPickCompany(name: string) {
   color: #1e293b;
 }
 
+.acc-trigger:hover {
+  background: #f8fafc;
+}
+
 .acc-trigger-inner {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
+}
+
+.acc-trigger-title {
+  letter-spacing: 0.01em;
 }
 
 .acc-trigger-inner :deep(.nav-icon-wrap),
@@ -1917,17 +2003,17 @@ function onFilterPickCompany(name: string) {
 }
 
 .acc-body {
-  padding: 6px 8px 10px;
-  border-top: 1px solid #f4f6f8;
+  padding: 2px 4px 10px 6px;
+  border-top: none;
 }
 
 .acc-sublink {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  margin-bottom: 4px;
+  gap: 10px;
+  padding: 8px 10px 8px 8px;
+  margin-bottom: 2px;
   border: none;
   border-radius: 8px;
   background: transparent;
@@ -1936,6 +2022,7 @@ function onFilterPickCompany(name: string) {
   color: #475569;
   cursor: pointer;
   text-align: left;
+  font: inherit;
 }
 
 .acc-sublink:hover {
@@ -1946,7 +2033,7 @@ function onFilterPickCompany(name: string) {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: transparent;
+  background: rgba(0, 108, 77, 0.42);
   flex-shrink: 0;
 }
 
@@ -1957,7 +2044,7 @@ function onFilterPickCompany(name: string) {
 }
 
 .acc-sublink.is-current .acc-dot {
-  background: #43a047;
+  background: var(--db-primary);
 }
 
 .nav-single {

@@ -84,7 +84,7 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
           width="40"
           height="40"
         />
-        <span class="brand-title">企业 AI 智能体数据平台</span>
+        <span class="brand-title">灵枢数据一体化平台</span>
       </div>
 
       <AuthGuestBar v-if="!isLoggedIn" />
@@ -125,21 +125,207 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
         一查主体脉络 · 纵观产业纵深
       </p>
 
-      <form class="search-form" @submit.prevent="onSearch">
-        <div class="search-shell">
-          <CompanySearchInput v-model="query" variant="hero" />
-          <button type="submit" class="search-btn">
-            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
-              <path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <div class="search-hub" aria-label="企业检索">
+        <form class="search-form search-form--hub" @submit.prevent="onSearch">
+          <div class="search-shell">
+            <CompanySearchInput v-model="query" variant="hero" />
+            <button type="submit" class="search-btn">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                <path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              查询
+            </button>
+          </div>
+        </form>
+        <div class="search-hub-tools" role="toolbar" aria-label="更多检索方式">
+          <button
+            type="button"
+            class="search-hub-chip"
+            title="多条件组合定位企业"
+            @click="openFilter"
+          >
+            <svg class="search-hub-chip-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M5 5h14l-5.4 6.5V19l-3.2 1.6v-8.1L5 5z"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linejoin="round"
+              />
             </svg>
-            查询
+            <span class="search-hub-chip-label">高级筛选</span>
+          </button>
+          <button
+            type="button"
+            class="search-hub-chip"
+            title="行业 · 资质 · 资本与招投标等多维标签"
+            @click="openTagFilter"
+          >
+            <svg class="search-hub-chip-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 6h6l1.5 2.5L13 6h7a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z"
+                stroke="currentColor"
+                stroke-width="1.65"
+                stroke-linejoin="round"
+              />
+              <path d="M9 11h6M9 14.5h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <span class="search-hub-chip-label">企业标签管理</span>
           </button>
         </div>
-      </form>
+      </div>
 
       <div class="hero-actions" role="navigation">
         <div class="hero-actions-grid">
+          <RouterLink :to="{ name: 'enterprise-graph' }" class="hero-action-card">
+            <span class="hero-action-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="7" cy="10" r="2.5" stroke="currentColor" stroke-width="1.75" />
+                <circle cx="17" cy="7" r="2.5" stroke="currentColor" stroke-width="1.75" />
+                <circle cx="15" cy="17" r="2.5" stroke="currentColor" stroke-width="1.75" />
+                <path
+                  d="M9.1 11.4l5.8-3M12.2 11.6l1.8 4.2M9.4 11.8l4.6 4.4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span class="hero-action-main">
+              <span class="hero-action-title">企业图谱</span>
+              <span class="hero-action-desc">投资任职与多源关系可视化</span>
+            </span>
+            <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </RouterLink>
+
+          <RouterLink :to="{ name: 'park-map' }" class="hero-action-card">
+            <span class="hero-action-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5.5 9.5l6.5-4 6.5 4v9.5a1.5 1.5 0 01-1.5 1.5H7a1.5 1.5 0 01-1.5-1.5V9.5z"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M10 21V12h4v9M8 8.2L12 5.5l4 2.7"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="hero-action-main">
+              <span class="hero-action-title">园区地图</span>
+              <span class="hero-action-desc">片区边界与企业空间分布</span>
+            </span>
+            <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </RouterLink>
+
+          <RouterLink :to="{ name: 'related-party-screening' }" class="hero-action-card">
+            <span class="hero-action-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="8" cy="9" r="3.25" stroke="currentColor" stroke-width="1.75" />
+                <circle cx="16" cy="8" r="2.75" stroke="currentColor" stroke-width="1.75" />
+                <circle cx="14" cy="16" r="2.75" stroke="currentColor" stroke-width="1.75" />
+                <path
+                  d="M10.2 11.1l3.6 2.1M15.1 10.3l-1.1 4.2M9.4 11.8l3.2 3.4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span class="hero-action-main">
+              <span class="hero-action-title">关联方排查</span>
+              <span class="hero-action-desc">股权穿透与人员、交易关联网络</span>
+            </span>
+            <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </RouterLink>
+
+          <RouterLink :to="{ name: 'business-anomaly-alert' }" class="hero-action-card">
+            <span class="hero-action-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 4.5L4 19h16L12 4.5z"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linejoin="round"
+                />
+                <path d="M12 9v5M12 16.5v.01" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="hero-action-main">
+              <span class="hero-action-title">经营异常预警</span>
+              <span class="hero-action-desc">公示异常、处罚与司法信号归集</span>
+            </span>
+            <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </RouterLink>
+
+          <RouterLink :to="{ name: 'historical-change-trace' }" class="hero-action-card">
+            <span class="hero-action-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 5v4h4M19 19v-4h-4"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M5 9a7 7 0 0112.9-3.1M19 15a7 7 0 01-12.9 3.1"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                />
+                <circle cx="12" cy="12" r="1.6" fill="currentColor" />
+              </svg>
+            </span>
+            <span class="hero-action-main">
+              <span class="hero-action-title">历史变更追溯</span>
+              <span class="hero-action-desc">工商与证照变更时间线还原</span>
+            </span>
+            <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </RouterLink>
+
+          <RouterLink :to="{ name: 'financing-event-track' }" class="hero-action-card">
+            <span class="hero-action-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 17V7h16v10H4z"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linejoin="round"
+                />
+                <path d="M8 11h8M8 14h5" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" />
+                <path
+                  d="M15 4.5v3M13.5 6h3"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span class="hero-action-main">
+              <span class="hero-action-title">融资事件追踪</span>
+              <span class="hero-action-desc">股权融资、并购与债券公开披露</span>
+            </span>
+            <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </RouterLink>
+
           <RouterLink :to="{ name: 'industry-analysis' }" class="hero-action-card">
             <span class="hero-action-icon" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -155,47 +341,6 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
               <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </RouterLink>
-
-          <button type="button" class="hero-action-card" @click="openFilter">
-            <span class="hero-action-icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M4 5h16l-6.2 7.4V20l-3.6 1.8v-9.4L4 5z"
-                  stroke="currentColor"
-                  stroke-width="1.85"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            <span class="hero-action-main">
-              <span class="hero-action-title">高级筛选</span>
-              <span class="hero-action-desc">多条件组合检索企业</span>
-            </span>
-            <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-
-          <button type="button" class="hero-action-card" @click="openTagFilter">
-            <span class="hero-action-icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M4 5.5h7l2 3 2-3h5a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1v-12a1 1 0 011-1z"
-                  stroke="currentColor"
-                  stroke-width="1.85"
-                  stroke-linejoin="round"
-                />
-                <path d="M9 11h6M9 15h4" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" />
-              </svg>
-            </span>
-            <span class="hero-action-main">
-              <span class="hero-action-title">企业标签管理</span>
-              <span class="hero-action-desc">行业 · 认定 · 纳税与海关 · 招投标 · 资本背景</span>
-            </span>
-            <svg class="hero-action-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
 
           <RouterLink :to="{ name: 'supply-chain-analysis' }" class="hero-action-card">
             <span class="hero-action-icon" aria-hidden="true">
@@ -465,16 +610,31 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
 }
 
 .subhead {
-  margin: 0 0 40px;
+  margin: 0 0 28px;
   max-width: 560px;
   font-size: 15px;
   color: var(--db-muted);
   line-height: 1.7;
 }
 
+.search-hub {
+  width: 100%;
+  max-width: 720px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(26, 62, 76, 0.08);
+  box-shadow: var(--db-shadow);
+  overflow: hidden;
+}
+
 .search-form {
   width: 100%;
   max-width: 720px;
+}
+
+.search-form--hub {
+  max-width: none;
+  padding: 10px 10px 6px;
 }
 
 .search-shell {
@@ -486,6 +646,81 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
   padding: 6px 6px 6px 22px;
   gap: 8px;
   border: 1px solid rgba(26, 62, 76, 0.06);
+}
+
+.search-hub .search-shell {
+  box-shadow: none;
+  border-color: rgba(26, 62, 76, 0.07);
+  background: #f9fbfa;
+}
+
+.search-hub-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 14px;
+  padding: 6px 10px 8px;
+}
+
+.search-hub-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 12px;
+  border: 1px solid rgba(26, 62, 76, 0.16);
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(26, 62, 76, 0.88);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.search-hub-chip:hover {
+  color: var(--db-brand);
+  border-color: rgba(0, 108, 77, 0.38);
+}
+
+.search-hub-chip:active {
+  transform: scale(0.99);
+}
+
+.search-hub-chip:focus-visible {
+  outline: 2px solid var(--db-primary);
+  outline-offset: 2px;
+}
+
+.search-hub-chip-icon {
+  flex-shrink: 0;
+  color: rgba(0, 108, 77, 0.52);
+  transition: color 0.2s ease;
+}
+
+.search-hub-chip:hover .search-hub-chip-icon {
+  color: var(--db-primary);
+}
+
+.search-hub-chip-label {
+  line-height: 1.25;
+}
+
+@media (max-width: 560px) {
+  .search-hub-tools {
+    padding: 6px 8px 7px;
+    gap: 6px 12px;
+  }
+
+  .search-hub-chip {
+    padding: 7px 12px 7px 10px;
+    font-size: 14px;
+  }
 }
 
 .search-btn {

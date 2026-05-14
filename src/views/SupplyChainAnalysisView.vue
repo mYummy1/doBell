@@ -73,7 +73,7 @@ const useCases = [
     <header class="feature-header">
       <RouterLink to="/" class="brand">
         <img class="brand-logo" :src="faviconUrl" alt="" width="40" height="40" />
-        <span class="brand-title">企业 AI 智能体数据平台</span>
+        <span class="brand-title">灵枢数据一体化平台</span>
       </RouterLink>
       <AuthGuestBar v-if="!isLoggedIn" />
       <UserMenuDropdown v-else />

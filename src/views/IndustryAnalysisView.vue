@@ -197,7 +197,7 @@ onBeforeUnmount(() => {
     <header class="ia2-top">
       <RouterLink to="/" class="ia2-brand">
         <img class="ia2-logo" :src="faviconUrl" alt="" width="40" height="40" />
-        <span class="ia2-brand-txt">企业 AI 智能体数据平台</span>
+        <span class="ia2-brand-txt">灵枢数据一体化平台</span>
       </RouterLink>
       <div class="ia2-top-meta">
         <AuthGuestBar v-if="!isLoggedIn" />
