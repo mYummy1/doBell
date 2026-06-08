@@ -293,7 +293,7 @@ function onViewMore() {
                 />
               </svg>
             </span>
-            <h2 id="filter-modal-title" class="modal-title">多字段高级筛选</h2>
+            <h2 id="filter-modal-title" class="modal-title">多字段高级搜索</h2>
           </div>
           <button type="button" class="modal-close" aria-label="关闭" @click="closeFilter">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">

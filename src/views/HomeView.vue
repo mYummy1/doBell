@@ -142,7 +142,7 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
           <button
             type="button"
             class="search-hub-chip"
-            title="多条件组合定位企业"
+            title="多字段组合高级搜索"
             @click="openFilter"
           >
             <svg class="search-hub-chip-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -153,7 +153,7 @@ watch(() => route.query.openFilter, consumeOpenFilterQuery)
                 stroke-linejoin="round"
               />
             </svg>
-            <span class="search-hub-chip-label">高级筛选</span>
+            <span class="search-hub-chip-label">高级搜索</span>
           </button>
           <button
             type="button"

@@ -397,7 +397,7 @@ onBeforeUnmount(() => {
           </section>
 
           <section id="ia-feature-graph" class="ia2-panel anchor-target">
-            <SectionHeading :title="`产业图谱 · ${trackLabelShort}`">
+            <SectionHeading :title="`产业链图谱 · ${trackLabelShort}`">
               <svg viewBox="0 0 24 24" fill="none">
                 <rect x="3" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.75" />
                 <rect x="15" y="4" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.75" />
@@ -412,7 +412,7 @@ onBeforeUnmount(() => {
           </section>
 
           <section id="ia-feature-region" class="ia2-panel anchor-target">
-            <SectionHeading :title="`区域热力 · ${trackLabelShort}`">
+            <SectionHeading :title="`区域产业热力 · ${trackLabelShort}`">
               <svg viewBox="0 0 24 24" fill="none">
                 <path
                   d="M4 17l6-10 5 8 6-13v15H4z"

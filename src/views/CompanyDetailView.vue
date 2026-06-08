@@ -7,6 +7,9 @@ import ChainEnterpriseTree from '../components/ChainEnterpriseTree.vue'
 import ChinaRegionHeatmap from '../components/ChinaRegionHeatmap.vue'
 import IndustryChainFlow from '../components/IndustryChainFlow.vue'
 import IndustryPortraitRadar from '../components/IndustryPortraitRadar.vue'
+import BiddingTrackPanel from '../components/BiddingTrackPanel.vue'
+import BusinessDynamicsMonitor from '../components/BusinessDynamicsMonitor.vue'
+import EnterpriseTagManager from '../components/EnterpriseTagManager.vue'
 import JudicialRiskModule from '../components/JudicialRiskModule.vue'
 import SentimentMonitorDashboard from '../components/SentimentMonitorDashboard.vue'
 import NavMenuIcon from '../components/NavMenuIcon.vue'
@@ -630,9 +633,9 @@ const OVERVIEW_NAV_GROUPS = [
     icon: 'list' as const,
     items: [
       { label: '司法风险', anchor: 'sec-legal-risk' },
-      { label: '关联穿透', anchor: 'sec-relation-penetrate' },
-      { label: '经营动态', anchor: 'sec-business-dynamics' },
-      { label: '招投标', anchor: 'sec-bidding' },
+      { label: '关联关系穿透', anchor: 'sec-relation-penetrate' },
+      { label: '经营动态监控', anchor: 'sec-business-dynamics' },
+      { label: '招投标追踪', anchor: 'sec-bidding' },
       { label: '企业标签管理', anchor: 'sec-tags' },
       { label: '知识产权', anchor: 'sec-ip' },
       { label: '对外投资', anchor: 'sec-invest' },
@@ -747,7 +750,7 @@ function onFilterPickCompany(name: string) {
           <svg class="header-filter-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M4 5h16l-6.2 7.4V20l-3.6 1.8v-9.4L4 5z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
           </svg>
-          高级筛选
+          高级搜索
         </button>
 
         <AuthGuestBar v-if="!isLoggedIn" />
@@ -1029,80 +1032,24 @@ function onFilterPickCompany(name: string) {
           
         </section>
         <section id="sec-business-dynamics" v-show="activeNavAnchor === 'sec-business-dynamics'" class="card section-card anchor-target">
-          <SectionHeading title="经营动态">
+          <SectionHeading title="经营动态监控">
             <svg viewBox="0 0 24 24" fill="none"><path d="M4 14l4-4 4 4 8-8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M4 19h16" stroke="currentColor" stroke-width="1.75"/></svg>
           </SectionHeading>
           <div class="viz-box biz-dynamics-panel">
-            <ul class="biz-timeline">
-              <li v-for="(row, i) in businessDynamicsItems" :key="i" class="biz-timeline-item">
-                <div class="biz-timeline-axis" aria-hidden="true">
-                  <span class="biz-timeline-dot" />
-                  <span v-if="i < businessDynamicsItems.length - 1" class="biz-timeline-line" aria-hidden="true" />
-                </div>
-                <div class="biz-timeline-body">
-                  <div class="biz-timeline-head">
-                    <time class="biz-timeline-date" :datetime="row.date">{{ row.date }}</time>
-                    <span class="biz-timeline-type">{{ row.type }}</span>
-                  </div>
-                  <h4 class="biz-timeline-title">{{ row.title }}</h4>
-                  <ul v-if="row.fields?.length" class="biz-timeline-fields">
-                    <li
-                      v-for="(f, j) in row.fields"
-                      :key="`${f.label}-${j}`"
-                      class="biz-timeline-field"
-                    >
-                      <span class="biz-timeline-field-label">{{ f.label }}</span>
-                      <span class="biz-timeline-field-value">{{ f.value }}</span>
-                    </li>
-                  </ul>
-                  <p v-else-if="row.detail" class="biz-timeline-detail">{{ row.detail }}</p>
-                </div>
-              </li>
-            </ul>
+            <BusinessDynamicsMonitor :items="businessDynamicsItems" />
           </div>
         </section>
         <section id="sec-bidding" v-show="activeNavAnchor === 'sec-bidding'" class="card section-card anchor-target">
-          <SectionHeading title="招投标">
+          <SectionHeading title="招投标追踪">
             <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v6c0 4-8 10-8 10S4 17 4 13V7l8-4z" stroke="currentColor" stroke-width="1.75"/></svg>
           </SectionHeading>
-         
           <div class="viz-box bidding-panel">
-            <div class="tbl-scroll">
-              <table class="plain-table bidding-table">
-                <thead>
-                  <tr>
-                    <th>项目名称</th>
-                    <th>角色</th>
-                    <th>金额（含税）</th>
-                    <th>采购方 / 业主</th>
-                    <th>日期</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(row, i) in biddingItems" :key="i">
-                    <td class="bidding-cell-project">{{ row.project }}</td>
-                    <td>
-                      <span class="bidding-role" :class="row.role === '中标' ? 'is-win' : 'is-bid'">{{ row.role }}</span>
-                    </td>
-                    <td>{{ row.amount }}</td>
-                    <td>{{ row.purchaser }}</td>
-                    <td class="muted">{{ row.date }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <BiddingTrackPanel :items="biddingItems" />
           </div>
         </section>
         <section id="sec-tags" v-show="activeNavAnchor === 'sec-tags'" class="card section-card anchor-target">
-          <SectionHeading title="企业标签"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M8 21l-4-4V7h16v14l-4 4v-9H8v9z" stroke="currentColor" stroke-width="1.75"/></svg></SectionHeading>
-          <div class="tag-row">
-            <span
-              v-for="(label, i) in company.tags"
-              :key="`${i}-${label}`"
-              class="pill"
-              :class="`pill--${i % 6}`"
-            >{{ label }}</span>
-          </div>
+          <SectionHeading title="企业标签管理"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M8 21l-4-4V7h16v14l-4 4v-9H8v9z" stroke="currentColor" stroke-width="1.75"/></svg></SectionHeading>
+          <EnterpriseTagManager :initial-tags="company.tags" />
         </section>
         <section id="sec-ip" v-show="activeNavAnchor === 'sec-ip'" class="card section-card anchor-target ip-section">
           <SectionHeading title="知识产权">
@@ -1535,7 +1482,7 @@ function onFilterPickCompany(name: string) {
           </div>
         </section>
         <section id="sec-region-heatmap" v-show="activeNavAnchor === 'sec-region-heatmap'" class="card section-card anchor-target">
-          <SectionHeading title="区域热力">
+          <SectionHeading title="区域产业热力">
             <svg viewBox="0 0 24 24" fill="none"><path d="M4 17l6-10 5 8 6-13v15H4z" stroke="currentColor" stroke-width="1.75" fill="rgba(239,68,68,0.12)"/></svg>
           </SectionHeading>
           

@@ -12,8 +12,8 @@ export const INDUSTRY_ANALYSIS_DETAIL_NAV: readonly IndustryAnalysisFeatureNavIt
   { id: 'ia-feature-portrait', label: '产业画像', description: '多维度竞争力雷达' },
   { id: 'ia-feature-chain', label: '链上企业', description: '产业链节点分布' },
   { id: 'ia-feature-key', label: '重点企业', description: '标杆企业速览' },
-  { id: 'ia-feature-graph', label: '产业图谱', description: '上下游关系流' },
-  { id: 'ia-feature-region', label: '区域热力', description: '省级热度分布' },
+  { id: 'ia-feature-graph', label: '产业链图谱', description: '上下游关系流' },
+  { id: 'ia-feature-region', label: '区域产业热力', description: '省级热度分布' },
   { id: 'ia-feature-policy', label: '产业政策', description: '权威政策摘录' },
   { id: 'ia-feature-finance', label: '投融资', description: '融资轮次与时间线' },
 ] as const
